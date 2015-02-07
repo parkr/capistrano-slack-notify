@@ -2,6 +2,8 @@
 
 Capistrano 2 deploy notifier for Slack.
 
+![Sample Slack output.](https://raw.githubusercontent.com/parkr/capistrano-slack-notify/master/Screen%20Shot%202015-02-06%20at%205.52.10%20PM.png)
+
 ## Installation
 
 Add this line to your application's Gemfile:
