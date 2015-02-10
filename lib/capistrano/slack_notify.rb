@@ -47,10 +47,11 @@ module Capistrano
         namespace :slack do
           desc "Notify Slack that the deploy has started."
           task :starting do
+            application = fetch(:slack_application, fetch(:application))
             msg = if branch = fetch(:branch, nil)
-              "#{fetch(:deployer)} is deploying #{fetch(:application)}/#{branch} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{application}/#{branch} to #{fetch(:stage, 'production')}"
             else
-              "#{fetch(:deployer)} is deploying #{fetch(:application)} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{application} to #{fetch(:stage, 'production')}"
             end
             call_slack_api(msg)
             set(:start_time, Time.now)
