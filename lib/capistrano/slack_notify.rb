@@ -36,6 +36,10 @@ module Capistrano
       fetch(:slack_webhook_url)
     end
 
+    def slack_application
+      fetch(:slack_app_name, fetch(:application))
+    end
+
     def self.extended(configuration)
       configuration.load do
         slack_defaults
@@ -47,11 +51,10 @@ module Capistrano
         namespace :slack do
           desc "Notify Slack that the deploy has started."
           task :starting do
-            application = fetch(:slack_application, fetch(:application))
             msg = if branch = fetch(:branch, nil)
-              "#{fetch(:deployer)} is deploying #{application}/#{branch} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{slack_application}/#{branch} to #{fetch(:stage, 'production')}"
             else
-              "#{fetch(:deployer)} is deploying #{application} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{slack_application} to #{fetch(:stage, 'production')}"
             end
             call_slack_api(msg)
             set(:start_time, Time.now)
@@ -59,7 +62,7 @@ module Capistrano
 
           desc "Notify Slack that the deploy has completed successfully."
           task :finished do
-            msg = "#{fetch(:deployer)} deployed to #{fetch(:application)} successfully"
+            msg = "#{fetch(:deployer)} deployed to #{slack_application} successfully"
             if start_time = fetch(:start_time, nil)
               elapsed = Time.now.to_i - start_time.to_i
               msg << " in #{elapsed} seconds."
