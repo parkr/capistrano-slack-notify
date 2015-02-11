@@ -17,10 +17,6 @@ module Capistrano
     end
 
     def slack_defaults
-      if fetch(:slack_deploy_defaults, true)
-        before 'deploy', 'slack:starting'
-        after  'deploy', 'slack:finished'
-      end
     end
 
     def payload(announcement)
@@ -36,13 +32,17 @@ module Capistrano
       fetch(:slack_webhook_url)
     end
 
-    def slack_application
+    def slack_app_name
       fetch(:slack_app_name, fetch(:application))
     end
 
     def self.extended(configuration)
       configuration.load do
-        slack_defaults
+        # Add the default hooks by default.
+        if fetch(:slack_deploy_defaults, true)
+          before 'deploy', 'slack:starting'
+          after  'deploy', 'slack:finished'
+        end
 
         set :deployer do
           ENV['USER'] || ENV['GIT_AUTHOR_NAME'] || `git config user.name`.chomp
@@ -52,9 +52,9 @@ module Capistrano
           desc "Notify Slack that the deploy has started."
           task :starting do
             msg = if branch = fetch(:branch, nil)
-              "#{fetch(:deployer)} is deploying #{slack_application}/#{branch} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{slack_app_name}/#{branch} to #{fetch(:stage, 'production')}"
             else
-              "#{fetch(:deployer)} is deploying #{slack_application} to #{fetch(:stage, 'production')}"
+              "#{fetch(:deployer)} is deploying #{slack_app_name} to #{fetch(:stage, 'production')}"
             end
             call_slack_api(msg)
             set(:start_time, Time.now)
@@ -62,7 +62,7 @@ module Capistrano
 
           desc "Notify Slack that the deploy has completed successfully."
           task :finished do
-            msg = "#{fetch(:deployer)} deployed to #{slack_application} successfully"
+            msg = "#{fetch(:deployer)} deployed to #{slack_app_name} successfully"
             if start_time = fetch(:start_time, nil)
               elapsed = Time.now.to_i - start_time.to_i
               msg << " in #{elapsed} seconds."
