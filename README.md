@@ -34,11 +34,11 @@ That's it! It'll send 2 messages to `#general` as the `capistrano` user when you
 You can optionally set some other parameters:
 
 ```ruby
-set :slack_room,        '#my_channel'
-set :slack_username,    'my-company-bot'
-set :slack_emoji,       ':ghost:'
-set :deployer,          ENV['USER'].capitalize
-set :slack_application, 'example-app'
+set :slack_room,     '#my_channel'
+set :slack_username, 'my-company-bot'
+set :slack_emoji,    ':ghost:'
+set :deployer,       ENV['USER'].capitalize
+set :slack_app_name, 'example-app'
 ```
 
 ## Contributing
