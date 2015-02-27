@@ -41,11 +41,15 @@ module Capistrano
       fetch(:stage, 'production')
     end
 
+    def revision
+      `git rev-parse #{branch}`.chomp
+    end
+
     def deploy_target
       [
         slack_app_name,
         branch
-      ].join('')
+      ].join('/') + " (#{revision[0..5]})"
     end
 
     def self.extended(configuration)
