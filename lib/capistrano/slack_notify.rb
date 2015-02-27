@@ -78,6 +78,11 @@ module Capistrano
 
             call_slack_api(msg)
           end
+
+          desc "Notify Slack that the deploy failed."
+          task :failed do
+            call_slack_api("#{deployer} failed to deploy #{deploy_target} to #{stage}")
+          end
         end # end namespace :slack
       end
     end # end self.extended

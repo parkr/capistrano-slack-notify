@@ -36,7 +36,17 @@ after  'deploy', 'slack:finished'
 ```
 
 That's it! It'll send 2 messages to `#general` as the `capistrano` user when you deploy.
-You can optionally set some other parameters:
+
+The tasks are:
+
+- `slack:starting` - the intent-to-deploy message
+- `slack:finished` - the completion message
+- `slack:failed`   - the failure message
+
+**None of the tasks are automatically added**, you have to do that yourself,
+like in the usage example above.
+
+You can optionally set some other parameters to customize the output:
 
 ```ruby
 set :slack_room,     '#my_channel' # defaults to #platform
