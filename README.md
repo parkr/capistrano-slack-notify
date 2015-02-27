@@ -22,12 +22,17 @@ Or install it yourself as:
 
 ## Usage
 
+`capistrano-slack-notify` defines two tasks:
+
 Add the following to your `Capfile`:
 
 ```ruby
 require 'capistrano-slack-notify'
 
 set :slack_webhook_url,   "https://hooks.slack.com/services/XXX/XXX/XXX"
+
+before 'deploy', 'slack:starting'
+after  'deploy', 'slack:finished'
 ```
 
 That's it! It'll send 2 messages to `#general` as the `capistrano` user when you deploy.
@@ -37,7 +42,7 @@ You can optionally set some other parameters:
 set :slack_room,     '#my_channel' # defaults to #platform
 set :slack_username, 'my-company-bot' # defaults to 'capistrano'
 set :slack_emoji,    ':ghost:' # defaults to :rocket:
-set :deployer,       ENV['USER'].capitalize
+set :deployer,       ENV['USER'].capitalize # defaults to ENV['USER']
 set :slack_app_name, 'example-app' # defaults to :application
 ```
 
