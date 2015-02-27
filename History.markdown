@@ -1,4 +1,4 @@
-## HEAD
+## 1.2.0 / 2015-02-27
 
   * Allow colored output to notifications (#9)
   * Add a `slack:failed` task. (#7)
