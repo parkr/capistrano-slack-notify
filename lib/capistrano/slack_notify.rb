@@ -16,9 +16,6 @@ module Capistrano
        puts "#{e.message} or slack may be down"
     end
 
-    def slack_defaults
-    end
-
     def payload(announcement)
       {
         'channel' =>    fetch(:slack_room, '#platform'),
@@ -36,14 +33,24 @@ module Capistrano
       fetch(:slack_app_name, fetch(:application))
     end
 
+    def deployer
+      fetch(:deployer)
+    end
+
+    def stage
+      fetch(:stage, 'production')
+    end
+
+    def deploy_target
+      [
+        slack_app_name,
+        branch
+      ].join('')
+    end
+
     def self.extended(configuration)
       configuration.load do
         # Add the default hooks by default.
-        if fetch(:slack_deploy_defaults, true)
-          before 'deploy', 'slack:starting'
-          after  'deploy', 'slack:finished'
-        end
-
         set :deployer do
           ENV['USER'] || ENV['GIT_AUTHOR_NAME'] || `git config user.name`.chomp
         end
@@ -51,24 +58,20 @@ module Capistrano
         namespace :slack do
           desc "Notify Slack that the deploy has started."
           task :starting do
-            msg = if branch = fetch(:branch, nil)
-              "#{fetch(:deployer)} is deploying #{slack_app_name}/#{branch} to #{fetch(:stage, 'production')}"
-            else
-              "#{fetch(:deployer)} is deploying #{slack_app_name} to #{fetch(:stage, 'production')}"
-            end
-            call_slack_api(msg)
+            call_slack_api("#{deployer} is deploying #{deploy_target} to #{stage}")
             set(:start_time, Time.now)
           end
 
           desc "Notify Slack that the deploy has completed successfully."
           task :finished do
-            msg = "#{fetch(:deployer)} deployed to #{slack_app_name} successfully"
+            msg = "#{deployer} deployed #{deploy_target} to #{stage} successfully"
+
             if start_time = fetch(:start_time, nil)
-              elapsed = Time.now.to_i - start_time.to_i
-              msg << " in #{elapsed} seconds."
+              msg << " in #{Time.now.to_i - start_time.to_i} seconds."
             else
               msg << "."
             end
+
             call_slack_api(msg)
           end
         end # end namespace :slack
