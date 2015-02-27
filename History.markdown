@@ -1,5 +1,6 @@
 ## HEAD
 
+  * Add the revision to the deploy stage message. (#6)
   * Remove default `before` and `after` hooks (#4)
 
 ## 1.1.0 / 2015-02-11
