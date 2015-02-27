@@ -54,6 +54,7 @@ set :slack_username, 'my-company-bot' # defaults to 'capistrano'
 set :slack_emoji,    ':ghost:' # defaults to :rocket:
 set :deployer,       ENV['USER'].capitalize # defaults to ENV['USER']
 set :slack_app_name, 'example-app' # defaults to :application
+set :slack_color,    false # defaults to true
 ```
 
 ## Contributing
