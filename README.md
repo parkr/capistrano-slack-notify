@@ -2,9 +2,7 @@
 
 Capistrano 2 deploy notifier for Slack.
 
-![Sample Slack output for success.](https://raw.githubusercontent.com/parkr/capistrano-slack-notify/master/screenshots/successful-deploy.png)
-
-![Sample Slack output for failure.](https://raw.githubusercontent.com/parkr/capistrano-slack-notify/master/screenshots/failed-deploy.png)
+![Sample Slack output for success.](https://raw.githubusercontent.com/parkr/capistrano-slack-notify/master/screenshot.png)
 
 ## Installation
 
