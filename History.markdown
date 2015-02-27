@@ -1,5 +1,6 @@
 ## HEAD
 
+  * Add a `slack:failed` task. (#7)
   * Add the revision to the deploy stage message. (#6)
   * Remove default `before` and `after` hooks (#4)
 
