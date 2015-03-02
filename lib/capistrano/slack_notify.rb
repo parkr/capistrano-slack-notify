@@ -87,14 +87,11 @@ module Capistrano
     end
 
     def revision
-      `git rev-parse #{branch}`.chomp
+      @revision ||= `git rev-parse #{branch}`.chomp
     end
 
     def deploy_target
-      [
-        slack_app_name,
-        branch
-      ].join('/') + " (#{revision[0..5]})"
+      [slack_app_name, branch].join('/') + (revision ? " (#{revision[0..5]})" : "")
     end
 
     def self.extended(configuration)
