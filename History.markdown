@@ -1,3 +1,7 @@
+## HEAD
+
+  * Don't show empty () if no revision found (#10)
+
 ## 1.2.0 / 2015-02-27
 
   * Allow colored output to notifications (#9)
