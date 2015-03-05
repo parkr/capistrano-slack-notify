@@ -86,6 +86,10 @@ module Capistrano
       fetch(:stage, 'production')
     end
 
+    def destination
+      fetch(:slack_destination, stage)
+    end
+
     def revision
       @revision ||= `git rev-parse #{branch}`.chomp
     end
@@ -104,13 +108,13 @@ module Capistrano
         namespace :slack do
           desc "Notify Slack that the deploy has started."
           task :starting do
-            post_to_channel(:grey, "#{deployer} is deploying #{deploy_target} to #{stage}")
+            post_to_channel(:grey, "#{deployer} is deploying #{deploy_target} to #{destination}")
             set(:start_time, Time.now)
           end
 
           desc "Notify Slack that the deploy has completed successfully."
           task :finished do
-            msg = "#{deployer} deployed #{deploy_target} to #{stage} *successfully*"
+            msg = "#{deployer} deployed #{deploy_target} to #{destination} *successfully*"
 
             if start_time = fetch(:start_time, nil)
               msg << " in #{Time.now.to_i - start_time.to_i} seconds."
@@ -123,7 +127,7 @@ module Capistrano
 
           desc "Notify Slack that the deploy failed."
           task :failed do
-            post_to_channel(:red, "#{deployer} *failed* to deploy #{deploy_target} to #{stage}")
+            post_to_channel(:red, "#{deployer} *failed* to deploy #{deploy_target} to #{destination}")
           end
         end # end namespace :slack
       end
