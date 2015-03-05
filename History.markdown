@@ -1,6 +1,7 @@
 ## HEAD
 
   * Don't show empty () if no revision found (#10)
+  * Introduce the idea of a destination which can override the stage. (#12)
 
 ## 1.2.0 / 2015-02-27
 
