@@ -43,8 +43,9 @@ module Capistrano
 
     def attachment_payload(color, announcement)
       {
-        'channel' => slack_channel,
-        'username' => slack_username,
+        'channel'     => slack_channel,
+        'username'    => slack_username,
+        'icon_emoji'  => slack_emoji,
         'attachments' => [{
           'fallback'  => announcement,
           'text'      => announcement,
