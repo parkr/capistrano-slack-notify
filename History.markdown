@@ -1,3 +1,7 @@
+## HEAD
+
+  * Fix missing emoji for color-enabled messages (#14)
+
 ## 1.3.0 / 2015-03-05
 
   * Don't show empty () if no revision found (#10)
