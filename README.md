@@ -33,6 +33,7 @@ set :slack_webhook_url,   "https://hooks.slack.com/services/XXX/XXX/XXX"
 
 before 'deploy', 'slack:starting'
 after  'deploy', 'slack:finished'
+before 'deploy:rollback', 'slack:failed'
 ```
 
 That's it! It'll send 2 messages to `#general` as the `capistrano` user when you deploy.
