@@ -96,7 +96,7 @@ module Capistrano
     end
 
     def revision
-      @revision ||= `git ls-remote #{repository} #{branch}`.chomp
+      @revision ||= `git ls-remote #{repository} #{branch}`.split(" ").first
     end
 
     def deploy_target
