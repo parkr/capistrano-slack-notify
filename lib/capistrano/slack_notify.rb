@@ -91,8 +91,12 @@ module Capistrano
       fetch(:slack_destination, stage)
     end
 
+    def repository
+      fetch(:repository, 'origin')
+    end
+
     def revision
-      @revision ||= `git rev-parse #{branch}`.chomp
+      @revision ||= `git ls-remote #{repository} #{branch}`.chomp
     end
 
     def deploy_target
