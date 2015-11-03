@@ -1,3 +1,7 @@
+## HEAD
+
+  * using ls-remote instead of rev-parse to fetch revision (#19)
+
 ## 1.3.1 / 2015-05-13
 
   * Fix missing emoji for color-enabled messages (#14)
