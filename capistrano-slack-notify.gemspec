@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "capistrano-slack-notify"
-  spec.version       = "1.3.1"
+  spec.version       = "1.3.2"
   spec.authors       = ["Parker Moore"]
   spec.email         = ["parkrmoore@gmail.com"]
   spec.summary       = %q{Minimalist Capistrano 2 notifier for Slack.}

@@ -1,4 +1,4 @@
-## HEAD
+## 1.3.2 / 2015-11-03
 
   * using ls-remote instead of rev-parse to fetch revision (#19)
 
