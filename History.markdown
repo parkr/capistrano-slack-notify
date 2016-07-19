@@ -1,3 +1,7 @@
+## HEAD
+
+  * Rename `revision` to `rev` to avoid collision with Capistrano method (#22)
+
 ## 1.3.2 / 2015-11-03
 
   * using ls-remote instead of rev-parse to fetch revision (#19)
