@@ -34,15 +34,17 @@ set :slack_webhook_url,   "https://hooks.slack.com/services/XXX/XXX/XXX"
 before 'deploy', 'slack:starting'
 after  'deploy', 'slack:finished'
 before 'deploy:rollback', 'slack:failed'
+after 'deploy:rollback', 'slack:rolled_back'
 ```
 
 That's it! It'll send 2 messages to `#general` as the `capistrano` user when you deploy.
 
 The tasks are:
 
-- `slack:starting` - the intent-to-deploy message
-- `slack:finished` - the completion message
-- `slack:failed`   - the failure message
+- `slack:starting`    - the intent-to-deploy message
+- `slack:finished`    - the completion message
+- `slack:failed`      - the failure message
+- `slack:rolled_back` - the rollback message
 
 **None of the tasks are automatically added**, you have to do that yourself,
 like in the usage example above.
