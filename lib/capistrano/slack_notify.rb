@@ -8,8 +8,7 @@ module Capistrano
       :grey  => '#CCCCCC',
       :red   => '#BB0000',
       :green => '#7CD197',
-      :blue  => '#103FFB',
-      :yellow => '#FFFF00'
+      :blue  => '#103FFB'
     }
 
     def post_to_channel(color, message)
@@ -120,7 +119,7 @@ module Capistrano
 
           desc "Notify Slack that the rollback has completed."
           task :rolled_back do
-            post_to_channel(:yellow, "#{deployer} has rolled back #{deploy_target}")
+            post_to_channel(:green, "#{deployer} has rolled back #{deploy_target}")
           end
 
           desc "Notify Slack that the deploy has completed successfully."
