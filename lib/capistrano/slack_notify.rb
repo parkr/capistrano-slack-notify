@@ -117,6 +117,11 @@ module Capistrano
             set(:start_time, Time.now)
           end
 
+          desc "Notify Slack that the rollback has completed."
+          task :rolled_back do
+            post_to_channel(:green, "#{deployer} has rolled back #{deploy_target}")
+          end
+
           desc "Notify Slack that the deploy has completed successfully."
           task :finished do
             msg = "#{deployer} deployed #{deploy_target} to #{destination} *successfully*"
