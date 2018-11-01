@@ -113,6 +113,11 @@ module Capistrano
         namespace :slack do
           desc "Notify Slack that the deploy has started."
           task :starting do
+
+            on_rollback do
+              post_to_channel(:red, "#{deployer} *failed* to deploy #{deploy_target} to #{destination}")
+            end
+
             post_to_channel(:grey, "#{deployer} is deploying #{deploy_target} to #{destination}")
             set(:start_time, Time.now)
           end
