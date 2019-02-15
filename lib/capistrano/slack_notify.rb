@@ -96,7 +96,11 @@ module Capistrano
     end
 
     def rev
-      @rev ||= `git ls-remote #{repository} #{branch}`.split(" ").first
+      if fetch(:scm) == :subversion
+        $rev ||= `svn info https://svn.suran.com/wmt/trunk/`.match(/^Revision: (\d+)$/)[1]
+      else
+        @rev ||= `git ls-remote #{repository} #{branch}`.split(" ").first
+      end
     end
 
     def deploy_target
