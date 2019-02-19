@@ -1,6 +1,7 @@
 require 'capistrano'
 require 'json'
 require 'net/http'
+require 'open3'
 
 module Capistrano
   module SlackNotify
@@ -11,11 +12,11 @@ module Capistrano
       :blue  => '#103FFB'
     }
 
-    def post_to_channel(color, message)
+    def post_to_channel(color, message, extra_attachment=nil)
       if use_color?
-        call_slack_api(attachment_payload(color, message))
+        call_slack_api(attachment_payload(color, message, extra_attachment))
       else
-        call_slack_api(regular_payload(message))
+        call_slack_api(regular_payload(message, extra_attachment))
       end
     end
 
@@ -31,28 +32,67 @@ module Capistrano
        puts "#{e.message} or slack may be down"
     end
 
-    def regular_payload(announcement)
-      {
+    def regular_payload(announcement, extra_attachment=nil)
+      payload = {
         'channel'    => slack_channel,
         'username'   => slack_username,
         'text'       => announcement,
         'icon_emoji' => slack_emoji,
         'mrkdwn'     => true
-      }.to_json
+      }
+      if extra_attachment
+        add_payload_attachment(payload, extra_attachment)
+      end
+      payload.to_json
     end
 
-    def attachment_payload(color, announcement)
-      {
+    def attachment_payload(color, announcement, extra_attachment=nil)
+      payload = {
         'channel'     => slack_channel,
         'username'    => slack_username,
-        'icon_emoji'  => slack_emoji,
-        'attachments' => [{
-          'fallback'  => announcement,
-          'text'      => announcement,
-          'color'     => HEX_COLORS[color],
-          'mrkdwn_in' => %w{text}
-        }]
-      }.to_json
+        'icon_emoji'  => slack_emoji
+      }
+      add_payload_attachment(payload, announcement, color)
+      if extra_attachment
+        add_payload_attachment(payload, extra_attachment)
+      end
+      payload.to_json
+    end
+
+    # Add an attachment to the payload
+    #
+    # :param payload: the payload to fill
+    # :param text: the attachment text
+    # :param color: the optionnal color in HEX_COLORS hash
+    def add_payload_attachment(payload, text, color=nil)
+      attachment = {
+        'fallback'  => text,
+        'text'      => text,
+        'mrkdwn_in' => %w{text}
+      }
+      if color
+        attachment["color"] = HEX_COLORS[color]
+      end
+      if ! payload.key?("attachments")
+        payload["attachments"] = [attachment]
+      else
+        payload["attachments"] << attachment
+      end
+    end
+
+    def get_changelog()
+      begin
+        last_revision = IO.readlines("#{current_path}/revisions.log")[-1]
+        last_revision = /Branch .* \(at ([0-9a-z]+).*/.match(last_revision)[0]
+
+        result = '```'
+        Open3.popen3('git', '--no-pager', 'log', '--no-merges', '--no-color', '--pretty=- %s', '%s..%s' % [last_revision, rev]) do |stdin, stdout, stderr, wait_thr|
+          result = stdout.read
+        end
+        return result
+      rescue
+        return nil
+      end
     end
 
     def use_color?
@@ -103,6 +143,10 @@ module Capistrano
       [slack_app_name, branch].join('/') + (rev ? " (#{rev[0..5]})" : "")
     end
 
+    def slack_add_changelog
+      fetch(:slack_add_changelog, false)
+    end
+
     def self.extended(configuration)
       configuration.load do
         # Add the default hooks by default.
@@ -137,7 +181,12 @@ module Capistrano
               msg << "."
             end
 
-            post_to_channel(:green, msg)
+            if slack_add_changelog
+              changelog = get_changelog
+            else
+              changelog = nil
+            end
+            post_to_channel(:green, msg, changelog)
           end
 
           desc "Notify Slack that the deploy failed."
