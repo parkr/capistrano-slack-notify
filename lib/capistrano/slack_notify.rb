@@ -1,5 +1,5 @@
 require 'capistrano'
-require 'json'
+require 'active_support'
 require 'net/http'
 
 module Capistrano
