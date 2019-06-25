@@ -96,11 +96,15 @@ module Capistrano
     end
 
     def rev
-      @rev ||= `git ls-remote #{repository} #{branch}`.split(" ").first
+      @rev ||= `git ls-remote #{repository} #{branch_or_not}`.split(" ").first
+    end
+
+    def branch_or_not
+      fetch(:branch, '')
     end
 
     def deploy_target
-      [slack_app_name, branch].join('/') + (rev ? " (#{rev[0..5]})" : "")
+      [slack_app_name, branch_or_not].join('/') + (rev ? " (#{rev[0..5]})" : "")
     end
 
     def self.extended(configuration)
