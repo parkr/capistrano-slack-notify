@@ -95,16 +95,28 @@ module Capistrano
       fetch(:repository, 'origin')
     end
 
+    def revision_from_branch
+      `git ls-remote #{repository} #{branch_or_not}`.split(' ').first
+    end
+
     def rev
-      @rev ||= `git ls-remote #{repository} #{branch_or_not}`.split(" ").first
+      @rev ||= fetch(:revision, revision_from_branch)
     end
 
     def branch_or_not
       fetch(:branch, '')
     end
 
+    def slack_app_and_branch
+      if branch_or_not.nil?
+        slack_app_name
+      else
+        [slack_app_name, branch_or_not].join('/')
+      end
+    end
+
     def deploy_target
-      [slack_app_name, branch_or_not].join('/') + (rev ? " (#{rev[0..5]})" : "")
+      slack_app_and_branch + (rev ? " (#{rev[0..5]})" : '')
     end
 
     def self.extended(configuration)
