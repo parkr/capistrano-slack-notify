@@ -96,22 +96,26 @@ module Capistrano
     end
 
     def revision_from_branch
-      `git ls-remote #{repository} #{branch_or_not}`.split(' ').first
+      `git ls-remote #{repository} #{branch}`.split(' ').first
     end
 
     def rev
-      @rev ||= fetch(:revision, revision_from_branch)
+      @rev ||= if @branch.nil?
+                 fetch(:revision)
+               else
+                 revision_from_branch
+               end
     end
 
-    def branch_or_not
-      fetch(:branch, '')
+    def branch
+      @branch ||= fetch(:branch, '')
     end
 
     def slack_app_and_branch
-      if branch_or_not.nil?
+      if branch.nil?
         slack_app_name
       else
-        [slack_app_name, branch_or_not].join('/')
+        [slack_app_name, branch].join('/')
       end
     end
 
