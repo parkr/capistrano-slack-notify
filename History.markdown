@@ -1,4 +1,4 @@
-## HEAD
+## 1.3.4 / 2019-06-27
 
   * If no branch is specified, derive revision from HEAD (#29)
 
