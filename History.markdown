@@ -1,3 +1,7 @@
+## HEAD
+
+  * If no branch is specified, derive revision from HEAD (#29)
+
 ## 1.3.3 / 2016-07-19
 
   * Rename `revision` to `rev` to avoid collision with Capistrano method (#22)
